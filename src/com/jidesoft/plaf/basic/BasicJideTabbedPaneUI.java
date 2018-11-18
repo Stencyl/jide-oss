@@ -5529,7 +5529,7 @@ public class BasicJideTabbedPaneUI extends JideTabbedPaneUI implements SwingCons
         return new TabCloseButton(type);
     }
 
-    private JButton createButton(int type) {
+    protected JButton createButton(int type) {
         return _tabPane.createNoFocusButton(type);
     }
 
