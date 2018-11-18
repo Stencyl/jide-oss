@@ -22,7 +22,8 @@
         <echo message="User Home: ${user.home}"/>
         <echo message="Current Dir: ${user.dir}"/>
         <echo message="--------------------------------"/>
-        <echo message="Base Dir: ${basedir}"/>
+    	<echo message="Original Base Dir: ${originalbasedir}"/>
+    	<echo message="Base Dir: ${basedir}"/>
         <echo message="Output Dir: ${output_dir}"/>
         <echo message="JavaDoc Dir: ${javadoc_dir}"/>
         <echo message="Source list: ${source_list}"/>
@@ -41,24 +42,57 @@
     </target>
 
     <path id="standard_classpath">
-        <pathelement location="${basedir}\libs\ui.jar"/>
-        <pathelement location="${basedir}\libs\JavaRuntimeSupport.jar"/>
+        <pathelement location="${originalbasedir}\libs\ui.jar"/>
     </path>
-
+	
     <target name="compile" depends="init" description="compile the source code">
         <delete dir="${output_dir}"/>
         <mkdir dir="${output_dir}"/>
-        <javac source="${source}" target="${target}" srcdir="${src_dir}"
+    	<delete dir="${output_dir_java9}"/>
+    	<mkdir dir="${output_dir_java9}"/>
+    	
+        <javac source="1.8" target="1.8"
                destdir="${output_dir}"
                fork="yes" memoryInitialSize="${initheapsize}" memoryMaximumSize="${maxheapsize}" verbose="no"
+        	   includeantruntime="false" executable="${java8.jdk}/bin/javac"
                debug="${debug}" deprecation="${deprecation}">
+            <src path="${src_dir}" />
+            <src path="${src_dir_jdk8}/" />
+            <src path="${src_dir_apple}/" />
             <classpath refid="standard_classpath"/>
         </javac>
+    	
+    	<path id="java8-class-files">
+			<dirset dir="${output_dir}" />
+		</path>
+    	
+    	<javac source="1.9" target="1.9"
+               destdir="${output_dir_java9}"
+               fork="yes" memoryInitialSize="${initheapsize}" memoryMaximumSize="${maxheapsize}" verbose="no"
+        	   includeantruntime="false" executable="${java9.jdk}/bin/javac"
+               debug="${debug}" deprecation="${deprecation}">
+            <src path="${src_dir_jdk9}/" />
+    		<classpath refid="java8-class-files" />
+            <classpath refid="standard_classpath"/>
+            <compilerarg value="--add-exports"/>
+            <compilerarg value="java.desktop/com.sun.java.swing.plaf.windows=ALL-UNNAMED"/>
+            <compilerarg value="--add-exports"/>
+            <compilerarg value="java.desktop/sun.swing=ALL-UNNAMED"/>
+            <compilerarg value="--add-exports"/>
+            <compilerarg value="java.desktop/sun.awt.image=ALL-UNNAMED"/>
+            <compilerarg value="--add-exports"/>
+            <compilerarg value="java.desktop/sun.awt.windows=ALL-UNNAMED"/>
+            <compilerarg value="--add-exports"/>
+            <compilerarg value="java.base/sun.security.action=ALL-UNNAMED"/>
+        	<compilerarg value="--add-exports"/>
+        	<compilerarg value="java.desktop/sun.awt.shell=ALL-UNNAMED"/>
+        </javac>
+    	
         <copy todir="${output_dir}">
             <fileset dir="${src_dir}" includes="**/*.gif,**/*.jpg,**/*.png,**/*.properties,**/*.ttf,**/*.vm"/>
         </copy>
     </target>
-
+	
     <target name="javadoc" depends="compile" description="generate javadoc">
         <mkdir dir="${javadoc_dir}"/>
         <javadoc maxmemory="${maxheapsize}" sourcepath="${javadoc_source_list}"
@@ -78,6 +112,7 @@
                 <attribute name="Build-Date" value="${DSTAMP}"/>
                 <attribute name="Build-Time" value="${TSTAMP}"/>
                 <attribute name="Jide-Version" value="${jide_version}"/>
+            	<attribute name="Multi-Release" value="true"/>
                 <section name="com/jidesoft/swing/JideButton.class">
                     <attribute name="Java-Bean" value="True"/>
                 </section>
@@ -124,6 +159,7 @@
                     <attribute name="Java-Bean" value="True"/>
                 </section>
             </manifest>
+        	<zipfileset prefix="META-INF/versions/9/" dir="${output_dir_java9}"/>
         </jar>
     </target>
 
