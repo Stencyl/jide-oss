@@ -9020,7 +9020,11 @@ public class BasicJideTabbedPaneUI extends JideTabbedPaneUI implements SwingCons
             }
             if (_tabPane.getTabPlacement() == LEFT || _tabPane.getTabPlacement() == RIGHT || _tabPane.getComponentOrientation().isLeftToRight()) {
                 _tabPane.revalidate();
-                _tabPane.repaintTabAreaAndContentBorder();
+                try {
+                	_tabPane.repaintTabAreaAndContentBorder();
+                } catch(NullPointerException ex) {
+                	_tabPane.repaint();
+                }
             }
             else {
                 _tabPane.repaint();
