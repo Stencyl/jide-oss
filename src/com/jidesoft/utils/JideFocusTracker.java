@@ -46,6 +46,16 @@ public class JideFocusTracker {
 // Public Methods
 ////////////////////////////////////////////////////////////////////////////////
 
+    @Deprecated
+    public void setHeighestComponent(Component compHighest) {
+        setHighestComponent(compHighest);
+    }
+
+    @Deprecated
+    public Component getHeighestComponent() {
+        return getHighestComponent();
+    }
+
     public void setHighestComponent(Component compHighest) {
         Component OldValue = this.compHighest;
 
