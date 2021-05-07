@@ -9,6 +9,7 @@ package com.jidesoft.utils;
  */
 
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
@@ -20,7 +21,7 @@ import java.awt.event.FocusListener;
  */
 public class JideFocusTracker {
 
-    protected Component compHeighest;
+    protected Component compHighest;
     protected FocusListener listenerFocus = null;
     protected ContainerListener listenerContainer = null;
     protected transient FocusListener listenerMultiCast;
@@ -35,18 +36,18 @@ public class JideFocusTracker {
         listenerContainer = new MainContainerListener();
     }
 
-    public JideFocusTracker(Component compHeighest) {
+    public JideFocusTracker(Component compHighest) {
         this();
-        //System.out.println("constructing focus tracker for comp " + compHeighest);
-        setHeighestComponent(compHeighest);
+        //System.out.println("constructing focus tracker for comp " + compHighest);
+        setHighestComponent(compHighest);
     }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Public Methods
 ////////////////////////////////////////////////////////////////////////////////
 
-    public void setHeighestComponent(Component compHeighest) {
-        Component OldValue = this.compHeighest;
+    public void setHighestComponent(Component compHighest) {
+        Component OldValue = this.compHighest;
 
         if (OldValue != null) {
             synchronized (OldValue.getTreeLock()) {
@@ -54,18 +55,18 @@ public class JideFocusTracker {
             }
         }
 
-        if (compHeighest != null) {
-            synchronized (compHeighest.getTreeLock()) {
-                addInternalListeners(compHeighest);
+        if (compHighest != null) {
+            synchronized (compHighest.getTreeLock()) {
+                addInternalListeners(compHighest);
             }
         }
 
-        this.compHeighest = compHeighest;
+        this.compHighest = compHighest;
         // note - I would fire an event here if I thought anyone would care.
     }
 
-    public Component getHeighestComponent() {
-        return compHeighest;
+    public Component getHighestComponent() {
+        return compHighest;
     }
 
     /**
@@ -97,23 +98,31 @@ public class JideFocusTracker {
 ////////////////////////////////////////////////////////////////////////////////
 
     protected void addInternalListeners(Component component) {
-        component.addFocusListener(listenerFocus);
-        if (component instanceof Container) {
-            Container container = (Container) component;
-            container.addContainerListener(listenerContainer);
-            for (int i = 0; i < container.getComponentCount(); i++) {
-                addInternalListeners(container.getComponent(i));
+        if(!isExcludedComponent(component)) {
+            component.addFocusListener(listenerFocus);
+            if (component instanceof Container) {
+                Container container = (Container) component;
+                container.addContainerListener(listenerContainer);
+                for (int i = 0; i < container.getComponentCount(); i++) {
+                    addInternalListeners(container.getComponent(i));
+                }
             }
         }
     }
 
+    protected boolean isExcludedComponent(Component component) {
+        return component instanceof CellRendererPane;
+    }
+
     protected void removeInternalListeners(Component component) {
-        component.removeFocusListener(listenerFocus);
-        if (component instanceof Container) {
-            Container container = (Container) component;
-            container.removeContainerListener(listenerContainer);
-            for (int i = 0; i < container.getComponentCount(); i++) {
-                removeInternalListeners(container.getComponent(i));
+        if(!isExcludedComponent(component)) {
+            component.removeFocusListener(listenerFocus);
+            if (component instanceof Container) {
+                Container container = (Container) component;
+                container.removeContainerListener(listenerContainer);
+                for (int i = 0; i < container.getComponentCount(); i++) {
+                    removeInternalListeners(container.getComponent(i));
+                }
             }
         }
     }

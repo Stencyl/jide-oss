@@ -513,7 +513,7 @@ public class JideTabbedPane extends JTabbedPane {
             PageLastFocusTracker tracker = (PageLastFocusTracker) _pageLastFocusTrackers.get(oldComponent);
             _pageLastFocusTrackers.remove(oldComponent);
             if (tracker != null) {
-                tracker.setHeighestComponent(null); // Clear its listeners
+                tracker.setHighestComponent(null); // Clear its listeners
             }
         }
 
@@ -723,6 +723,10 @@ public class JideTabbedPane extends JTabbedPane {
      */
     public void setLayoutTrailingComponentBeforeButtons(boolean layoutTrailingComponentBeforeButtons) {
         _layoutTrailingComponentBeforeButtons = layoutTrailingComponentBeforeButtons;
+    }
+
+    public boolean isTabEditingAllowed(int tabIndex) {
+        return true;
     }
 
     /*
@@ -1088,7 +1092,7 @@ public class JideTabbedPane extends JTabbedPane {
             PageLastFocusTracker tracker = (PageLastFocusTracker) _pageLastFocusTrackers.get(c);
             _pageLastFocusTrackers.remove(c);
             if (tracker != null) {
-                tracker.setHeighestComponent(null); // Clear its listeners
+                tracker.setHighestComponent(null); // Clear its listeners
             }
         }
 
@@ -1241,7 +1245,7 @@ public class JideTabbedPane extends JTabbedPane {
         private FocusListener _lastFocusedListener;
 
         protected PageLastFocusTracker(Component pageComp) {
-            this.setHeighestComponent(pageComp);
+            this.setHighestComponent(pageComp);
         }
 
         protected Component getLastFocusedComponent() {
@@ -1249,8 +1253,8 @@ public class JideTabbedPane extends JTabbedPane {
         }
 
         @Override
-        public void setHeighestComponent(Component compHeighest) {
-            if (compHeighest == null) {
+        public void setHighestComponent(Component compHighest) {
+            if (compHighest == null) {
                 if (_lastFocusedListener != null) {
                     this.removeFocusListener(_lastFocusedListener);
                     _lastFocusedListener = null;
@@ -1267,7 +1271,7 @@ public class JideTabbedPane extends JTabbedPane {
                     this.addFocusListener(_lastFocusedListener);
                 }
             }
-            super.setHeighestComponent(compHeighest);
+            super.setHighestComponent(compHighest);
         }
     }
 

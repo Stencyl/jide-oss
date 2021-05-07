@@ -1086,7 +1086,7 @@ public class BasicJideTabbedPaneUI extends JideTabbedPaneUI implements SwingCons
             font = font.deriveFont(Font.BOLD);
         }
 
-        FontMetrics metrics = g.getFontMetrics(font);
+        FontMetrics metrics = _tabPane.getFontMetrics(font);
 
 //        while (title == null || title.length() < 3)
 //            title += " ";
@@ -7998,15 +7998,17 @@ public class BasicJideTabbedPaneUI extends JideTabbedPaneUI implements SwingCons
 
         @Override
         public Dimension getPreferredSize() {
-            if (_rects.length <= 0) {
+            if (_rects == null || _rects.length <= 0) {
                 return new Dimension(0, 0);
             }
-            if (_tabPane.getTabPlacement() == TOP || _tabPane.getTabPlacement() == BOTTOM) {
-                if (_tabPane.getComponentOrientation().isLeftToRight()) {
-                    return new Dimension(_rects[_rects.length - 1].x + _rects[_rects.length - 1].width + 10, _rects[0].y + _rects[0].height);
-                }
-                else {
-                    return new Dimension(_rects[0].x + _rects[0].width + getLeftMargin(), _rects[0].y + _rects[0].height);
+            if (_tabPane != null && (_tabPane.getTabPlacement() == TOP || _tabPane.getTabPlacement() == BOTTOM)) {
+                ComponentOrientation componentOrientation = _tabPane.getComponentOrientation();
+                if (componentOrientation == null || componentOrientation.isLeftToRight()) {
+                    return new Dimension(_rects[_rects.length - 1].x + _rects[_rects.length - 1].width + 10,
+                                         _rects[0].y + _rects[0].height);
+                } else {
+                    return new Dimension(_rects[0].x + _rects[0].width + getLeftMargin(),
+                                         _rects[0].y + _rects[0].height);
                 }
             }
             else {
@@ -9417,7 +9419,7 @@ public class BasicJideTabbedPaneUI extends JideTabbedPaneUI implements SwingCons
 
         if (!e.isPopupTrigger() && tabIndex >= 0
                 && _tabPane.isEnabledAt(tabIndex)
-                && _tabPane.isTabEditingAllowed() && (e.getClickCount() == 2)) {
+                && _tabPane.isTabEditingAllowed() && _tabPane.isTabEditingAllowed(tabIndex) && (e.getClickCount() == 2)) {
             boolean shouldEdit = true;
             if (_tabPane.getTabEditingValidator() != null)
                 shouldEdit = _tabPane.getTabEditingValidator().shouldStartEdit(tabIndex, e);

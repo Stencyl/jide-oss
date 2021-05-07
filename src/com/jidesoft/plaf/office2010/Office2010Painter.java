@@ -1,10 +1,10 @@
 /*
- * @(#)Office2007Painter.java 7/7/2009
+ * @(#)Office2010Painter.java 2/10/2012
  *
- * Copyright 2002 - 2009 JIDE Software Inc. All rights reserved.
+ * Copyright 2002 - 2012 JIDE Software Inc. All rights reserved.
  */
 
-package com.jidesoft.plaf.office2007;
+package com.jidesoft.plaf.office2010;
 
 import com.jidesoft.icons.IconsFactory;
 import com.jidesoft.plaf.UIDefaultsLookup;
@@ -31,33 +31,25 @@ import java.awt.geom.Area;
  * Please note, this class is an internal class which is meant to be used by other JIDE classes only. Future version
  * might break your build if you use it.
  */
-public class Office2007Painter extends BasicPainter {
+public class Office2010Painter extends BasicPainter {
 
     public static final String IS_MENU_PART_BUTTON = "isMenuPartButton";
 
-    private static Office2007Painter _instance;
+    private static Office2010Painter _instance;
     private ThemePainter _defaultPainter;
 
     public static ThemePainter getInstance() {
         if (_instance == null) {
-            _instance = new Office2007Painter();
+            _instance = new Office2010Painter();
         }
         return _instance;
     }
 
-    protected Office2007Painter() {
+    protected Office2010Painter() {
     }
 
-    /**
-     * Creates a default painter that paints something that could not be painted by Office2007Painter.'
-     * <p/>
-     * By default, it returns an Office2003Painter. However, if you doesn't like the painting theme of
-     * Office2003Painter, you could override this method to offer another default painter.
-     *
-     * @return the default painter instance.
-     */
     protected ThemePainter createDefaultPainter() {
-        return Office2003Painter.getInstance();
+        return Office2010Painter.getInstance();
     }
 
     public ThemePainter getDefaultPainter() {
@@ -69,7 +61,7 @@ public class Office2007Painter extends BasicPainter {
 
     public void installDefaults() {
         Boolean highContrast = UIManager.getBoolean("Theme.highContrast");
-        if (highContrast) {           
+        if (highContrast) {
             super.installDefaults();
         }
     }
@@ -83,37 +75,15 @@ public class Office2007Painter extends BasicPainter {
 
     @Override
     public Color getMenuItemBorderColor() {
-        return new Color(100, 100, 100);
+        return new Color(167, 171, 176);
     }
 
 
     public void paintContentBackground(JComponent c, Graphics g, Rectangle rect, int orientation, int state) {
         Graphics2D g2d = (Graphics2D) g.create();
-        Boolean highContrast = UIManager.getBoolean("Theme.highContrast");
-        g2d.setColor(highContrast ? UIDefaultsLookup.getColor("Content.background") : new Color(0xBFDBFF));
-        g2d.fillRect(rect.x, rect.y, rect.width, rect.height);
-
-//        JideSwingUtilities.fillGradient(g2d, new Rectangle(rect.x, rect.y, rect.width, 160), CONTENT_BG[0], CONTENT_BG[1], true);
-//        if (rect.height > 160) {
-//            int remainHeight = rect.height - 160;
-//            Rectangle rect1 = new Rectangle(rect.x, 0, rect.width, 0);
-//            Rectangle rect2 = new Rectangle(rect.x, 0, rect.width, 0);
-//            rect1.y = 160;
-//            if (remainHeight < 200) {
-//                rect1.height = remainHeight / 2;
-//            }
-//            else {
-//                rect1.height = 100 + ((remainHeight - 200) * 4 / 5);
-//            }
-//            rect2.y = rect1.y + rect1.height;
-//            rect2.height = rect.height - rect2.y;
-//
-//            JideSwingUtilities.fillGradient(g2d, rect1, CONTENT_BG[1], CONTENT_BG[2], true);
-//            JideSwingUtilities.fillGradient(g2d, rect2, CONTENT_BG[2], CONTENT_BG[3], true);
-//        }
-//
-//        ImageIcon imageIcon = IconsFactory.getImageIcon(Office2007Painter.class, "icons/background_top.png");
-//        g2d.drawImage(imageIcon.getImage(), 0, 0, c);
+//        Boolean highContrast = UIManager.getBoolean("Theme.highContrast");
+//        g2d.setColor(highContrast ? UIDefaultsLookup.getColor("Content.background") : new Color(0xBFDBFF));
+        JideSwingUtilities.fillGradient(g2d, new Rectangle(rect.x, rect.y, rect.width, 160), new Color(251, 252, 253), new Color(224, 227, 231), true);
         g2d.dispose();
     }
 
@@ -374,24 +344,18 @@ public class Office2007Painter extends BasicPainter {
 
 
     private static final Color[] STATUS_BAR_BG = new Color[]{
-            new Color(0x567DB0), // 1 line
-            new Color(0xFFFFFF), // 1 line
-            new Color(0xD7E6F9),
-            new Color(0xC7DCF8), // 0.333
-            new Color(0xB3D0F5),
-            new Color(0xD7E5F7), // 1
-            new Color(0xCDE0F7), // 1 line
-            new Color(0xBAD4F7), // 1 line
+            new Color(147, 154, 163), // 1 line
+            new Color(247, 250, 252), // 1 line
+            new Color(230, 234, 238),
+            new Color(191, 195, 200),
+            new Color(183, 188, 193), // 1 line
     };
 
     private static final Color[] SPECIAL_STATUS_BAR_BG = new Color[]{
             new Color(0x567DB0), // 1 line
             new Color(0xC5DCF8), // 1 line
             new Color(0xC2D9F7),
-            new Color(0xA9CAF7), // 0.333
-            new Color(0x90B6EA),
             new Color(0x7698C5), // 1
-            new Color(0x7495C2), // 1 line
             new Color(0x95ADCE), // 1 line
     };
 
@@ -407,17 +371,11 @@ public class Office2007Painter extends BasicPainter {
             g2d.drawLine(rect.x, y, rect.x + rect.width, y);
             y++;
 
-            Rectangle r = new Rectangle(rect.x, y, rect.width, (rect.height - 4) / 3);
+            Rectangle r = new Rectangle(rect.x, y, rect.width, rect.height);
             JideSwingUtilities.fillGradient(g2d, r, bg[2], bg[3], true);
-            r.y = r.y + r.height;
-            r.height = rect.height - r.y - 2;
-            JideSwingUtilities.fillGradient(g2d, r, bg[4], bg[5], true);
             y = r.y + r.height;
 
-            g2d.setColor(bg[6]);
-            g2d.drawLine(rect.x, y, rect.x + rect.width, y);
-            y++;
-            g2d.setColor(bg[7]);
+            g2d.setColor(bg[4]);
             g2d.drawLine(rect.x, y, rect.x + rect.width, y);
 
             g2d.dispose();
@@ -425,12 +383,7 @@ public class Office2007Painter extends BasicPainter {
     }
 
     @Override
-    public void paintStatusBarSeparator
-            (JComponent
-                     c, Graphics
-                     g, Rectangle
-                     rect, int orientation,
-             int state) {
+    public void paintStatusBarSeparator(JComponent c, Graphics g, Rectangle rect, int orientation, int state) {
         g.setColor(new Color(0x8DACD5));
         g.drawLine(rect.x, rect.y, rect.x, rect.y + rect.height);
         g.setColor(new Color(0xFFFFFF));
@@ -454,16 +407,15 @@ public class Office2007Painter extends BasicPainter {
             paintButtonBackground(c, g, rect, orientation, state, showBorder);
         }
         else {
-            JideSwingUtilities.drawImageBorder(g, IconsFactory.getImageIcon(Office2007Painter.class, "icons/menu_item_bg.png"), rect, new Insets(2, 2, 2, 2), true);
+            JideSwingUtilities.drawImageBorder(g, IconsFactory.getImageIcon(Office2010Painter.class, "icons/menu_item_bg.png"), rect, new Insets(2, 2, 2, 2), true);
         }
     }
 
     @Override
     public void paintPopupMenuSeparator(JComponent c, Graphics g, Rectangle rect, int orientation, int state) {
-        int defaultShadowWidth = UIDefaultsLookup.getInt("MenuItem.shadowWidth");
         super.paintPopupMenuSeparator(c, g, rect, orientation, state);
         g.setColor(new Color(0xC5C5C5));
-        g.drawLine(rect.x + defaultShadowWidth, rect.y, rect.x + defaultShadowWidth, rect.y + rect.height);
+        g.drawLine(rect.x + 24, rect.y, rect.x + 24, rect.y + rect.height);
     }
 
     public void paintDropDownIcon(Graphics g, int x, int y) {
@@ -485,26 +437,10 @@ public class Office2007Painter extends BasicPainter {
             getDefaultPainter().paintCommandBarBackground(c, g, rect, orientation, state);
             return;
         }
-        int x = rect.x;
-        int y = rect.y;
-        int width = rect.width;
-        int height = rect.height;
-
         Graphics2D g2d = (Graphics2D) g.create();
-        Color[] colors = {new Color(0xe8f1fc), new Color(0xe8f1fc), new Color(0xd2e1f4), new Color(0xebf3fd)};
-        for (int i = 0; i < colors.length; i++) {
-            Color color = colors[i];
-            colors[i] = ColorUtils.getDerivedColor(color, .47f);
-        }
-        if (1 != height - 2) {
-            g2d.setPaint(JideSwingUtilities.getLinearGradientPaint(x + 1, y + 1, x + 1, y + height - 2,
-                    new float[]{0f, .5f, .51f, 1f},
-                    colors));
-        }
-        g2d.fillRect(x + 1, y + 1, width - 2, height - 2);
-        AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP);
-        g2d.setComposite(SystemInfo.isJdk6Above() ? alphaComposite.derive(0.1f) : AlphaComposite.getInstance(alphaComposite.getRule(), 0.1f));
-        paintButtonBorder(c, g2d, rect, state);
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(rect.x, rect.y, rect.width, rect.height);
+//        paintButtonBorder(c, g2d, rect, state);
         g2d.dispose();
     }
 
